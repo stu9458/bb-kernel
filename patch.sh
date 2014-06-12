@@ -28,6 +28,8 @@ if [ -f ${DIR}/system.sh ] ; then
 	. ${DIR}/system.sh
 fi
 
+. ${DIR}/version.sh
+
 if [ "${RUN_BISECT}" ] ; then
 	git="git apply"
 fi
@@ -48,6 +50,11 @@ cleanup () {
 		git format-patch -${number} -o ${DIR}/patches/
 	fi
 	exit
+}
+
+extended () {
+	echo "pulling: ${KERNEL_EXTENDED}"
+	git pull ${GIT_OPTS} git://kernel.ubuntu.com/ubuntu/linux.git ${KERNEL_EXTENDED}
 }
 
 am33x () {
@@ -271,8 +278,8 @@ arm () {
 	echo "dir: arm"
 	${git} "${DIR}/patches/arm/0001-deb-pkg-Simplify-architecture-matching-for-cross-bui.patch"
 	${git} "${DIR}/patches/arm/0002-Without-MACH_-option-Early-printk-DEBUG_LL.patch"
-	${git} "${DIR}/patches/arm/0003-ARM-7668-1-fix-memset-related-crashes-caused-by-rece.patch"
-	${git} "${DIR}/patches/arm/0004-ARM-7670-1-fix-the-memset-fix.patch"
+	#${git} "${DIR}/patches/arm/0003-ARM-7668-1-fix-memset-related-crashes-caused-by-rece.patch"
+	#${git} "${DIR}/patches/arm/0004-ARM-7670-1-fix-the-memset-fix.patch"
 	${git} "${DIR}/patches/arm/0005-ARM-DTS-AM33XX-Add-PMU-support.patch"
 }
 
@@ -282,7 +289,7 @@ omap () {
 	#Fixes 800Mhz boot lockup: http://www.spinics.net/lists/linux-omap/msg83737.html
 	${git} "${DIR}/patches/omap/0001-regulator-core-if-voltage-scaling-fails-restore-orig.patch"
 	${git} "${DIR}/patches/omap/0002-omap2-twl-common-Add-default-power-configuration.patch"
-	${git} "${DIR}/patches/omap/0003-omap2-irq-fix-interrupt-latency.patch"
+	#${git} "${DIR}/patches/omap/0003-omap2-irq-fix-interrupt-latency.patch"
 	${git} "${DIR}/patches/omap/0003-mfd-omap-usb-host-Fix-clk-warnings-at-boot.patch"
 
 	echo "dir: omap/sakoman"
@@ -907,6 +914,7 @@ backports () {
 	${git} "${DIR}/patches/backports/0001-backport-v3.13.7-tpm_i2c_atmel.c.patch"
 }
 
+extended
 am33x
 arm
 omap
